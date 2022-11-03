@@ -7,7 +7,7 @@ const builder = new addonBuilder(manifest)
 
 builder.defineStreamHandler((args) => {
 	console.log("addon.js streams:", args);
-	if (args.id.match(/tt[^0-9]*/i)) {
+	if (args.id.match(/tt[^0-9]*/i)||args.id.match(/kitsu:[^0-9]*/i)) {
 		return Promise.resolve(stream(args.type, args.id,))
 		.then((streams) => ({ streams: streams }));
 		//return Promise.resolve({ streams: [] });

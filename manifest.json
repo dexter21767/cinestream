@@ -15,7 +15,8 @@
                 "series"
             ],
             "idPrefixes": [
-                "tt"
+                "tt",
+                "kitsu:"
             ]
         }
     ],
