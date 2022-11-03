@@ -73,7 +73,7 @@ async function getAnime(id, episode) {
         for (index in data.sources) {
             let source = data.sources[index]
             streams.push({
-                name: "consumet",
+                name: "anilist",
                 url: source.url,
                 title: source.quality,
                 behaviorHints: {
