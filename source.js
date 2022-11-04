@@ -2,7 +2,7 @@ const axios = require('axios').default;
 const tmdbAPI = require('./tmdb');
 const anime = require("./anime")
 const lok =  require("./lok")
-const flix = require("./flix")
+const flix = require("./Flix")
 const log = require('./logger')
 
 const NodeCache = require("node-cache");

@@ -1,8 +1,8 @@
 {
     "id": "community.cinestream",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "name": "Cinestream by dexter21767",
-    "description": "fast stream over https with multiple subtitles directly from cinemeta, by Dexter21767",
+    "description": "fast stream over https with multiple subtitles directly from cinemeta and anime kitsu, by Dexter21767",
     "logo": "https://www.freeiconspng.com/thumbs/movie-icon/movie-icon-24.png",
     "background": "https://github.com/Stremio/stremio-art/raw/main/originals/reiphantomhive1.png",
     "contactEmail": "ahmidiyasser@gmail.com",
