@@ -1,10 +1,8 @@
 const axios = require('axios').default;
 const tmdbAPI = require('./tmdb');
 const anime = require("./anime")
-
-const api = Buffer.from("aHR0cHM6Ly9zb3JhLW1vdmllLnZlcmNlbC5hcHA=", 'base64').toString('ascii');
-
-const randomUseragent = require('random-useragent');
+const lok =  require("./lok")
+const flix = require("./flix")
 const log = require('./logger')
 
 const NodeCache = require("node-cache");
@@ -49,51 +47,6 @@ async function request(methode, url, referer) {
     }
 }
 
-async function getMovie(id) {
-    url = `${api}/movies/${id}/watch?_data=routes/movies/\$movieId.watch`
-    referer = `${api}/movies/${id}/watch`
-    console.log("url", url)
-    log.info("url: "+ url)
-    console.log("referer", referer)
-    log.info("referer: "+ referer)
-    await request("head", referer)
-    res = (await request("get", url, referer))
-    if (!res) throw "error requesting data"
-    if (!res.sources) {
-        AxiosCache.del(url);
-        AxiosCache.del(referer);
-        throw "error getting sources";
-    }
-    const streams = [];
-    for (let source of res.sources) {
-        streams.push({ name: "kolkol", description: source.quality, url: source.url, subtitles: res.subtitles })
-    }
-    return streams
-}
-
-async function getSeries(id, season, episode) {
-    url = `${api}/tv-shows/${id}/season/${season}/episode/${episode}?_data=routes/tv-shows/\$tvId.season.\$seasonId.episode.\$episodeId`
-    referer = `${api}/tv-shows/${id}/season/${season}/episode/${episode}`
-    console.log("url", url)
-    log.info("url: "+ url)
-    console.log("referer", referer)
-    log.info("referer: "+ referer)
-    await request("head", referer)
-    res = (await request("get", url, referer))
-    if (!res) throw "error requesting data"
-    if (!res.sources) {
-        AxiosCache.del(url);
-        AxiosCache.del(referer);
-        throw "error getting sources";
-    }
-    const streams = [];
-    for (let source of res.sources) {
-        streams.push({ name: "kolkol", description: source.quality, url: source.url, subtitles: res.subtitles })
-    }
-    return streams
-
-}
-
 async function stream(type, id) {
     try {
         cached = StreamCache.get(id)
@@ -101,12 +54,26 @@ async function stream(type, id) {
         console.log("stream", type, id)
         log.info("stream: "+ type +' '+id)
         if (id.match(/tt[^0-9]*/i)){
-            tmdb_id = await tmdb(type, id.split(":")[0]);
-            if (!tmdb_id) throw "error getting tmdb id"
-            console.log("tmdb id:", tmdb_id)
-            log.info("tmdb id: "+ tmdb_id)
-            if (type == "movie") streams = await getMovie(tmdb_id)
-            if (type == "series") streams = await getSeries(tmdb_id, id.split(":")[1], id.split(":")[2])
+            meta = await tmdb(type, id.split(":")[0]);
+            if (!meta) throw "error getting tmdb id"
+            console.log("tmdb id:", meta.id)
+            log.info("tmdb id: "+ meta.id)
+            promises = [];
+            promises.push(lok(type,meta.id, id.split(":")[1], id.split(":")[2]))
+            promises.push(flix(type,meta, id.split(":")[1], id.split(":")[2]))
+            streams = await Promise.allSettled(promises).then(promises =>{
+                var streams = [];
+                promises.forEach((element) => {
+                    if(element.status == "fulfilled"){
+                        //console.log(element.value)
+                        streams = streams.concat(element.value)
+                    }
+                })
+                return streams;
+            })
+            console.log(streams)
+            return streams;
+
         }
         else if(id.match(/kitsu:[^0-9]*/i)){
             streams = await anime(type, id.split(":")[1],id.split(":")[2]);
@@ -120,7 +87,6 @@ async function stream(type, id) {
     }
 
 }
-
 
 
 module.exports = stream;

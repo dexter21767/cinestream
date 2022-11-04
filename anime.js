@@ -56,6 +56,7 @@ async function getAnime(id, episode) {
         cached = ShowCache.get(id)
         if(cached) return cached
         url = baseURL + "episodes/" + id;
+        console.log(url)
         
         data = await request({ methode: "get", url: url })
         if(data) ShowCache.set(id,data); 
@@ -63,7 +64,7 @@ async function getAnime(id, episode) {
         let ep = data.filter(function (el) {
             return el.number == episode;
         })
-
+        if(!ep || !ep.length) throw "can't find episode"
         url = baseURL + "watch/" + ep[0].id;
         data = await request({ methode: "get", url: url })
         if(!data) throw "error loading data"
