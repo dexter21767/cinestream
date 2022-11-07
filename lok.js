@@ -83,6 +83,7 @@ async function getSeries(id, season, episode) {
 
 async function stream(type, id,season,episode) {
     try {
+        throw "sorastream is down";
         console.log("lok stream", type, id)
             if (type == "movie") streams = await getMovie(id)
             if (type == "series") streams = await getSeries(id, season,episode)
