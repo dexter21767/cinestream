@@ -33,12 +33,14 @@ function filter(meta, data) {
             el.type == (meta['media_type'] ? "TV Series" : "Movie");
     });
 }
+
 async function stream(type, meta, season, episode) {
 
     try {
         id = SearchCache.get(meta.id)
         if (!id) {
-            url = `${baseURL}${meta["original_title"]}`;
+            title = meta["original_title"]
+            url = `${baseURL}${encodeURIComponent(title)}`;
             data = await request({ methode: "get", url: url })
             if (!data.results) throw "no search results"
             data = data.results;
