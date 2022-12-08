@@ -19,7 +19,8 @@ async function request(options) {
         })
         .catch(error => {
             if (error.response) {
-                console.error('error on source.js request:', error.response.status, error.response.statusText, error.config.url);
+                console.error('error on Flix.js request:', error.response.status, error.response.statusText, error.config.url);
+                log.error('error on Flix.js request:'+ error.response.status+ error.response.statusText + error.config.url);
             } else {
                 console.error(error);
             }
@@ -42,7 +43,7 @@ async function stream(type, meta, season, episode) {
             title = meta["original_title"]
             url = `${baseURL}${encodeURIComponent(title)}`;
             data = await request({ methode: "get", url: url })
-            if (!data.results) throw "no search results"
+            if (!data || !data.results) throw "no search results"
             data = data.results;
             title = data.filter(function (el) {
                 return el.title == meta['title'] &&

@@ -25,8 +25,8 @@ async function request(methode, url, referer) {
             })
             .catch(error => {
                 if (error.response) {
-                    console.error('error on source.js request:', error.response.status, error.response.statusText, error.config.url);
-                    log.error('error on source.js request:', error.response.status, error.response.statusText, error.config.url);
+                    console.error('error on lok.js request:', error.response.status, error.response.statusText, error.config.url);
+                    log.error('error on lok.js request:'+ error.response.status+ error.response.statusText + error.config.url);
                 } else {
                     console.error(error);
                     log.error(error);
@@ -83,7 +83,7 @@ async function getSeries(id, season, episode) {
 
 async function stream(type, id,season,episode) {
     try {
-       // throw "sorastream is down";
+        throw "sorastream is down";
         console.log("lok stream", type, id)
             if (type == "movie") streams = await getMovie(id)
             if (type == "series") streams = await getSeries(id, season,episode)
