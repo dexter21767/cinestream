@@ -20,7 +20,7 @@ async function request(options) {
         .catch(error => {
             if (error.response) {
                 console.error('error on Flix.js request:', error.response.status, error.response.statusText, error.config.url);
-                log.error('error on Flix.js request:'+ error.response.status+ error.response.statusText + error.config.url);
+                log.error('error on Flix.js request:' + error.response.status + error.response.statusText + error.config.url);
             } else {
                 console.error(error);
             }
@@ -39,6 +39,7 @@ async function stream(type, meta, season, episode) {
 
     try {
         id = SearchCache.get(meta.id)
+        console.log("id", id)
         if (!id) {
             title = meta["original_title"]
             url = `${baseURL}${encodeURIComponent(title)}`;
@@ -54,6 +55,7 @@ async function stream(type, meta, season, episode) {
             else throw "error getting flix id"
         }
         episodes = MetaCache.get(id)
+        console.log("episodes", episodes)
         if (!episodes) {
             url = `${baseURL}info?id=${id}`;
             data = await request({ methode: "get", url: url })
@@ -71,29 +73,31 @@ async function stream(type, meta, season, episode) {
 
         if (!episodes) throw "error"
         ep_id = episodes[0].id
-        Stream = StreamCache.get(ep_id)
-        if (!Stream) {
-            url = `${baseURL}watch?episodeId=${ep_id}&mediaId=${id}`;
-            data = await request({ methode: "get", url: url })
-            if (!data || !data.sources) throw "no results"
-            header = data.headers;
-            const streams = []
-            for (index in data.sources) {
-                let source = data.sources[index]
-                streams.push({
-                    name: "Flix",
-                    url: source.url,
-                    title: source.quality,
-                    behaviorHints: {
-                        notWebReady: true,
-                        proxyHeaders: { "request": header }
-                    }
-                })
-            }
+        let streams = StreamCache.get(ep_id)
+        console.log("streams", streams)
+        if (streams) return streams
 
-            if (streams) StreamCache.set(ep_id, streams)
-            return streams
+        url = `${baseURL}watch?episodeId=${ep_id}&mediaId=${id}`;
+        data = await request({ methode: "get", url: url })
+        if (!data || !data.sources) throw "no results"
+        header = data.headers;
+        streams = []
+        for (index in data.sources) {
+            let source = data.sources[index]
+            streams.push({
+                name: "Flix",
+                url: source.url,
+                title: source.quality,
+                behaviorHints: {
+                    notWebReady: true,
+                    proxyHeaders: { "request": header }
+                }
+            })
         }
+        console.log("streams", streams)
+        if (streams) StreamCache.set(ep_id, streams)
+        return streams
+
 
     } catch (e) {
         console.error(e)

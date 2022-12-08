@@ -7,10 +7,7 @@ const api = Buffer.from("aHR0cHM6Ly9zb3JhLW1vdmllLnZlcmNlbC5hcHA=", 'base64').to
 
 const randomUseragent = require('random-useragent');
 
-
-
 async function request(methode, url, referer) {
-
     id = Buffer.from(url).toString('base64')
     let cached = AxiosCache.get(url);
     if (cached) {
@@ -80,7 +77,6 @@ async function getSeries(id, season, episode) {
 
 }
 
-
 async function stream(type, id,season,episode) {
     try {
         throw "sorastream is down";
@@ -93,7 +89,6 @@ async function stream(type, id,season,episode) {
         console.error(e)
         return Promise.reject()
     }
-
 }
 
 module.exports = stream;

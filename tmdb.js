@@ -20,17 +20,25 @@ async function request(url, header) {
 
 }
 async function getMeta(type, id) {
+    try{
+        let data;
     if (type == "movie") {
         let url = `${BaseURL}/movie/${id}?api_key=${process.env.API_KEY}`
         let res = await request(url);
-        return res.data;
+        if(!res||!res.data) throw "error getting data"
+        data = res.data;
     } else if (type == "series") {
         let url = `${BaseURL}/find/${id}?api_key=${process.env.API_KEY}&external_source=imdb_id`
         let res = await request(url);
+        if(!res||!res.data) throw "error getting data"
         res.data.tv_results[0]["original_title"] = res.data.tv_results[0]["original_title"] || res.data.tv_results[0]["original_name"]
         res.data.tv_results[0]["title"] = res.data.tv_results[0]["title"] || res.data.tv_results[0]["name"]
-        return res.data.tv_results[0]
+        data = res.data.tv_results[0]
     }
+    return data;
+}catch(e){
+    console.error(e);
+}
 }
 
 
