@@ -22,6 +22,7 @@ async function request(options) {
                 console.error('error on Flix.js request:', error.response.status, error.response.statusText, error.config.url);
                 log.error('error on Flix.js request:' + error.response.status + error.response.statusText + error.config.url);
             } else {
+                log.error(error)
                 console.error(error);
             }
         });
@@ -101,6 +102,7 @@ async function stream(type, meta, season, episode) {
 
     } catch (e) {
         console.error(e)
+        log.error(e)
         return Promise.reject()
     }
 }
