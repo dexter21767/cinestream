@@ -1,4 +1,5 @@
 const axios = require('axios').default;
+const log = require('./logger')
 
 const NodeCache = require("node-cache");
 const SearchCache = new NodeCache({ stdTTL: (0.5 * 60 * 60), checkperiod: (1 * 60 * 60) });

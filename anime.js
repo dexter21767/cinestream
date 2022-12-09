@@ -1,5 +1,6 @@
 const axios = require('axios').default;
 const map = require("./map.json");
+const log = require('./logger')
 
 const NodeCache = require("node-cache");
 const ShowCache = new NodeCache({ stdTTL: (0.5 * 60 * 60), checkperiod: (1 * 60 * 60) });
