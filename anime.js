@@ -2,6 +2,9 @@ const axios = require('axios').default;
 const map = require("./map.json");
 const log = require('./logger')
 
+const ProxyList = require('free-proxy');
+const proxyList = new ProxyList();
+
 const NodeCache = require("node-cache");
 const ShowCache = new NodeCache({ stdTTL: (0.5 * 60 * 60), checkperiod: (1 * 60 * 60) });
 const StreamCache = new NodeCache({ stdTTL: (0.5 * 60 * 60), checkperiod: (1 * 60 * 60) });
@@ -13,7 +16,8 @@ client = axios.create({
 });
 
 async function request(options) {
-
+    proxies = await proxyList.random();
+    console.log(proxies)
     return await client(options)
         .then(res => {
             return res.data;

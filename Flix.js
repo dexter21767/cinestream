@@ -1,6 +1,9 @@
 const axios = require('axios').default;
 const log = require('./logger')
 
+const ProxyList = require('free-proxy');
+const proxyList = new ProxyList();
+
 const NodeCache = require("node-cache");
 const SearchCache = new NodeCache({ stdTTL: (0.5 * 60 * 60), checkperiod: (1 * 60 * 60) });
 const MetaCache = new NodeCache({ stdTTL: (0.5 * 60 * 60), checkperiod: (1 * 60 * 60) });
@@ -13,7 +16,11 @@ client = axios.create({
 });
 
 async function request(options) {
-
+    proxies = await proxyList.randomByProtocol('https');
+    console.log(proxies.ip,proxies.port)
+    if(proxies && proxies.ip && proxies.port)options.proxy = {protocol: 'https',host:proxies.ip,port:proxies.port};
+    options.proxy = {host:"75.126.253.8",port:"8080"};
+    	
     return await client(options)
         .then(res => {
             return res.data;
