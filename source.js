@@ -55,6 +55,12 @@ async function stream(type, id) {
         console.log("stream", type, id)
         log.info("stream: "+ type +' '+id)
         if (id.match(/tt[^0-9]*/i)){
+            const [tmdb_id,episode] = id.split(":");
+            
+            streams = await consumet.Movie(type,tmdb_id,episode)
+
+            
+            /* 
             meta = await tmdb(type, id.split(":")[0]);
             if (!meta) throw "error getting tmdb id"
             console.log("tmdb id:", meta.id)
@@ -74,7 +80,7 @@ async function stream(type, id) {
             })
             console.log(streams)
             return streams;
-
+            */
         }
         else if(id.match(/kitsu:[0-9]+:[0-9]+/i)){
             const [kitsu_id,episode] = id.match(/\d+/ig);
