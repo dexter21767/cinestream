@@ -4,6 +4,7 @@ const anime = require("./anime")
 const lok =  require("./lok")
 const flix = require("./Flix")
 const log = require('./logger')
+const consumet = require('./consumet');
 
 const NodeCache = require("node-cache");
 const AxiosCache = new NodeCache({ stdTTL: (0.5 * 60 * 60), checkperiod: (1 * 60 * 60) });
@@ -75,8 +76,11 @@ async function stream(type, id) {
             return streams;
 
         }
-        else if(id.match(/kitsu:[^0-9]*/i)){
-            streams = await anime(type, id.split(":")[1],id.split(":")[2]);
+        else if(id.match(/kitsu:[0-9]+:[0-9]+/i)){
+            const [kitsu_id,episode] = id.match(/\d+/ig);
+
+            streams = await consumet.Anime(kitsu_id,episode)
+            //streams = await anime(type, id.split(":")[1],id.split(":")[2]);
 
         }
         
