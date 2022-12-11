@@ -1,4 +1,4 @@
-const log = require('./logger')
+const log = require('./logger');
 const consumet = require('./consumet');
 
 const NodeCache = require("node-cache");
@@ -12,7 +12,7 @@ async function stream(type, id) {
         console.log("stream", type, id)
         log.info("stream: "+ type +' '+id)
         let streams;
-        if (id.match(/tt[^0-9]*/i)){
+        if (id.match(/tt\d+(:\d+)?(:\d+)?/i)){
             const [tmdb_id,season,episode] = id.split(":");
             
             streams = await consumet.Movie(type,tmdb_id,episode,season)
