@@ -55,9 +55,9 @@ async function stream(type, id) {
         console.log("stream", type, id)
         log.info("stream: "+ type +' '+id)
         if (id.match(/tt[^0-9]*/i)){
-            const [tmdb_id,episode] = id.split(":");
+            const [tmdb_id,season,episode] = id.split(":");
             
-            streams = await consumet.Movie(type,tmdb_id,episode)
+            streams = await consumet.Movie(type,tmdb_id,episode,season)
 
             
             /* 
