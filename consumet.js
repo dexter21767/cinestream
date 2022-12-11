@@ -142,7 +142,11 @@ async function scrapper(type = String, key = String, query = String, meta = Obje
         //console.log("episode", episode);
 
         let sources = [], subs = [];
+        
+        if (episode.subtitles) episode.subtitles.forEach((subtitle,index) => {episode.subtitles[index].url = "http://127.0.0.1:11470/subtitles.vtt?from="+ encodeURIComponent(subtitle.url) })
+
         if (episode.subtitles) subs = episode.subtitles
+        episode.subtitles.forEach((subtitle,index) => {episode.subtitles[index].url = "http://127.0.0.1:11470/subtitles.vtt?from="+ encodeURIComponent(subtitle.url) })
         if (episode.sources) {
             episode.sources.forEach((source) => {
                 //console.log(source);
