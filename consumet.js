@@ -61,7 +61,7 @@ async function getAnime(id, episode) {
         let streams = [];
         let subs = [];
         results.forEach(({ status, value }) => {
-            console.log("status", status, "value", value)
+            //console.log("status", status, "value", value)
             if (status == "fulfilled" && value) {
                 if (value.subs) subs = subs.concat(value.subs);
                 if (value.sources) streams = streams.concat(value.sources);
@@ -87,10 +87,9 @@ async function scrapper(type = String, key = String, query = String, ep, season)
 
         
         provider = type == "anime" ? new ANIME[key] : new MOVIES[key];
-        providerKeys = Object.keys(provider)
-        console.log(provider)
-        if(!provider.isWorking) throw `error provider not working ${key}`
 
+        //console.log(provider)
+        if(!provider.isWorking) throw `error provider not working ${key}`
         id = `${key}_${query}`;
         if(ep) id += `_${ep}`;
         if(season) id += `_${season}`;
@@ -141,7 +140,7 @@ async function scrapper(type = String, key = String, query = String, ep, season)
                 //console.log(source);
                 let stream = {
                     url: source.url,
-                    name: key,
+                    name: provider.name,
                     description: source.quality || "unknown",
                     behaviorHints: { bingeGroup: `cinestream_${key}_${source.quality}` }
                 }
