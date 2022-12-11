@@ -26,15 +26,15 @@ async function getMeta(id = String) {
 
         let res = await request(url);
         if(!res || !res.data) throw "error getting kitsu data";
-        console.log(res.data);
+        //console.log(res.data);
         let attributes = res.data.data.attributes;
         //console.log(attributes)
-        meta = { title: attributes.titles, year: attributes.startDate.split("-")[0], slug: attributes.slug };
+        meta = { title: attributes.canonicalTitle,titles: attributes.titles,type:"anime", year: attributes.startDate.split("-")[0], slug: attributes.slug };
         if(meta) KitsuCache.set(id,meta);
         return meta
     } catch (e) {
         console.error(e)
     }
 }
-
+//getMeta(1);
 module.exports = getMeta;

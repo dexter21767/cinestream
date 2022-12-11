@@ -1,4 +1,6 @@
 const { ANIME, MOVIES } = require("@consumet/extensions");
+const _ = require('underscore');
+
 const Kitsu = require('./kitsu.js');
 const tmdb = require('./tmdb');
 const log = require('./logger');
@@ -22,7 +24,7 @@ async function getMovie(type, id, episode, season) {
         const promises = [];
         //console.log(keys);
         for (const key in MOVIES) {
-            promises.push(scrapper(type, key, query, episode, season).catch(e=>{console.error(e)}));
+            promises.push(scrapper(type, key, query, meta, episode, season).catch(e => { console.error(e) }));
         }
         const results = await Promise.allSettled(promises)
         let streams = [];
@@ -55,7 +57,7 @@ async function getAnime(id, episode) {
         const promises = [];
         //console.log(keys);
         for (const key in ANIME) {
-            promises.push(scrapper("anime", key, query, episode).catch(e=>{console.error(e)}));
+            promises.push(scrapper("anime", key, query, meta, episode).catch(e => { console.error(e) }));
         }
         const results = await Promise.allSettled(promises)
         let streams = [];
@@ -68,9 +70,10 @@ async function getAnime(id, episode) {
             }
 
         })
+        /*
         streams.forEach(stream => {
             stream.subtitles = subs
-        })
+        })*/
         return streams
     } catch (e) {
         console.error(e);
@@ -78,21 +81,21 @@ async function getAnime(id, episode) {
     }
 }
 
-async function scrapper(type = String, key = String, query = String, ep, season) {
+async function scrapper(type = String, key = String, query = String, meta = Object, ep, season) {
     try {
         //if(!ep) ep = 1;
         //if(!season) season = 1; 
         //console.log(key);
         let Cached, provider, resultInfo, results, episode, id;
 
-        
+
         provider = type == "anime" ? new ANIME[key] : new MOVIES[key];
 
-        //console.log(provider)
-        if(!provider.isWorking) throw `error provider not working ${key}`
+        if (!provider.isWorking) throw `error provider not working ${key}`
+
         id = `${key}_${query}`;
-        if(ep) id += `_${ep}`;
-        if(season) id += `_${season}`;
+        if (ep) id += `_${ep}`;
+        if (season) id += `_${season}`;
 
         Cached = StreamCache.get(id)
         if (Cached) {
@@ -106,8 +109,13 @@ async function scrapper(type = String, key = String, query = String, ep, season)
         else results = await provider.search(query);
         if (!results || !results.results) throw `error searching on: ${key} ${type} ${query} ${ep} ${season}`;
         if (results && !Cached) SearchCache.set(id, results);
+        //console.log(key, "results", results.results[0], "meta", meta.title);
 
-        const firstResult = results.results[0];
+        let filteredResults = filter(results.results, meta)
+
+        //console.log("filteredResults", filteredResults);
+
+        const firstResult = (filteredResults && filteredResults.length) ? filteredResults[0] : results.results[0];
 
         if (!firstResult || !firstResult.id) throw `error searching first Result on: ${key} ${type} ${query} ${ep} ${season}`
 
@@ -142,6 +150,7 @@ async function scrapper(type = String, key = String, query = String, ep, season)
                     url: source.url,
                     name: provider.name,
                     description: source.quality || "unknown",
+                    subtitles: subs||[],
                     behaviorHints: { bingeGroup: `cinestream_${key}_${source.quality}` }
                 }
                 if (episode.headers) stream.behaviorHints.notWebReady = true; stream.behaviorHints.proxyHeaders = { request: episode.headers };
@@ -150,8 +159,8 @@ async function scrapper(type = String, key = String, query = String, ep, season)
         }
 
         id = `${key}_${query}`;
-        if(ep) id += `_${ep}`;
-        if(season) id += `_${season}`;
+        if (ep) id += `_${ep}`;
+        if (season) id += `_${season}`;
         if (sources) StreamCache.set(id, sources)
         if (subs) SubsCache.set(id, subs)
 
@@ -161,7 +170,40 @@ async function scrapper(type = String, key = String, query = String, ep, season)
         log.error(e);
     }
 }
+function filter(list = Array, meta = Object) {
+    let SortedResults, filteredResults = [];
+    list.forEach((element, index) => {
+        element.sortingRank = 0;
+        if (element.releaseDate){
+            if(element.releaseDate.toString().match(meta.year)) element.sortingRank++;
+            else element.sortingRank--;
+        }
+        else if (element.type && element.type.toLowerCase().match(meta.type.toLowerCase())) element.sortingRank++;
 
+        if(!element.releaseDate) element.sortingRank--;
+
+        if (element.id && meta.slug && element.id.toLowerCase() == meta.slug.toLowerCase()) element.sortingRank++;
+        else if (element.id && meta.slug && element.id.toLowerCase().match(meta.slug.toLowerCase())) element.sortingRank++;
+        else element.sortingRank--;
+
+        if (element.title && meta.title && element.title == meta.title) element.sortingRank++;
+        if (element.title && meta.title && element.title.toLowerCase() == meta.title.toLowerCase()) element.sortingRank++;
+        if (element.title && meta.title && element.title.toLowerCase().match(meta.title.toLowerCase())) element.sortingRank++;
+        else element.sortingRank--;
+
+        if (element.title && meta.original_title&& element.title.toLowerCase().match(meta.original_title.toLowerCase())) element.sortingRank++;
+        else if (meta.titles && meta.titles.length) meta.titles.forEach((el) => {
+            if (res.title.toLowerCase().match(el.toLowerCase())) element.sortingRank++;
+        })
+        else element.sortingRank--;
+
+        filteredResults[index] = element;
+    })
+    if(filteredResults) SortedResults= _.sortBy(filteredResults, 'sortingRank').reverse();
+    if(SortedResults) SortedResults = SortedResults.filter(value=> value.sortingRank>0);
+    //console.log("filteredResults",filteredResults,"SortedResults",SortedResults)
+    return SortedResults;
+}
 
 
 module.exports = { Anime: getAnime, Movie: getMovie };
