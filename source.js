@@ -11,15 +11,16 @@ async function stream(type, id) {
         if (cached) return cached
         console.log("stream", type, id)
         log.info("stream: "+ type +' '+id)
+        let streams;
         if (id.match(/tt[^0-9]*/i)){
             const [tmdb_id,season,episode] = id.split(":");
             
             streams = await consumet.Movie(type,tmdb_id,episode,season)
 
         }
-        else if(id.match(/kitsu:[0-9]+:[0-9]+/i)){
+        else if(id.match(/kitsu:\d+(:\d+)?/i)){
             const [kitsu_id,episode] = id.match(/\d+/ig);
-
+            console.log(kitsu_id,episode)
             streams = await consumet.Anime(kitsu_id,episode)
 
         }
