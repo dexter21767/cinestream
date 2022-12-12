@@ -142,7 +142,7 @@ async function scrapper(type = String, key = String, query = String, meta = Obje
         //console.log("episode", episode);
 
         let sources = [], subs = [];
-        
+
         if (episode.subtitles) episode.subtitles.forEach((subtitle,index) => {episode.subtitles[index].url = "http://127.0.0.1:11470/subtitles.vtt?from="+ encodeURIComponent(subtitle.url) })
 
         if (episode.subtitles) subs = episode.subtitles
@@ -205,7 +205,7 @@ function filter(list = Array, meta = Object) {
     })
     if(filteredResults) SortedResults= _.sortBy(filteredResults, 'sortingRank').reverse();
     if(SortedResults) SortedResults = SortedResults.filter(value=> value.sortingRank>0);
-    //console.log("filteredResults",filteredResults,"SortedResults",SortedResults)
+    console.log("SortedResults",SortedResults)
     return SortedResults;
 }
 
