@@ -1,4 +1,4 @@
-const { addonBuilder } = require("./stremio-addon-sdk/src/index");
+const { addonBuilder } = require("stremio-addon-sdk");
 
 const stream = require("./source");
 // Docs: https://github.com/Stremio/stremio-addon-sdk/blob/master/docs/api/responses/manifest.md
