@@ -17,8 +17,8 @@ app.use(cors())
 
 
 app.use(swStats.getMiddleware({
-	name: addonInterface.manifest.name,
-	version: addonInterface.manifest.version,
+	name: manifest.name,
+	version: manifest.version,
 	authentication: true,
 	onAuthenticate: function (req, username, password) {
 		// simple check for username and password
