@@ -16,6 +16,7 @@
 		"random-useragent": "^0.5.0",
 		"slugify": "^1.6.5",
 		"stremio-addon-sdk": "github:dexter21767/stremio-addon-sdk",
+		"sub2vtt": "github:dexter21767/sub2vtt",
 		"underscore": "^1.13.6",
 		"winston-daily-rotate-file": "^4.7.1"
 	},
