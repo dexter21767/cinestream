@@ -15,7 +15,6 @@ app.use(cors())
 
 
 app.get('/', (_, res) => {
-	res.redirect('/configure')
 	res.end();
 });
 
@@ -33,7 +32,7 @@ app.get('/stream/:type/:id/:extra?.json', async (req, res) => {
 	const args = req.params;
 
 	console.log("addon.js streams:", args);
-	if (args.id.match(/tt[^0-9]*/i)||req.id.match(/kitsu:[^0-9]*/i)) {
+	if (args.id.match(/tt[^0-9]*/i)||args.id.match(/kitsu:[^0-9]*/i)) {
 		return Promise.resolve(stream(args.type, args.id,))
 		.then((streams) => {res.send({ streams: streams }); });
 		//return Promise.resolve({ streams: [] });
