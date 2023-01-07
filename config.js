@@ -5,7 +5,7 @@ var config = {}
 switch (env) {
     case 'beamup':
 		config.port = process.env.PORT
-        config.local = "https://2ecbbd610840-opensubtitles.baby-beamup.club"
+        config.local = "https://2ecbbd610840-cinestream.baby-beamup.club"
         break;
 
     case 'local':
