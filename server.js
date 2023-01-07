@@ -2,7 +2,7 @@
 
 const app = require('./index.js')
 const { serveHTTP, publishToCentral } = require("stremio-addon-sdk");
-const addonInterface = require("./addon")
+const addonInterface = require("./old/addon")
 const config = require('./config.js');
 
 //serveHTTP(addonInterface, { sws:true,port: process.env.PORT || 63355,static:'/logs'})

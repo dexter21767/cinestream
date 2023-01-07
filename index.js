@@ -2,9 +2,11 @@ const express = require("express");
 const app = express();
 const cors = require('cors');
 const path = require('path');
+const swStats = require('swagger-stats')
+const sub2vtt = require('sub2vtt');
+
 const stream = require("./source");
 const manifest = require("./manifest.json");
-const sub2vtt = require('sub2vtt');
 
 app.set('trust proxy', true)
 
@@ -13,6 +15,19 @@ app.use('/assets', express.static(path.join(__dirname, 'vue', 'dist', 'assets'))
 
 app.use(cors())
 
+
+app.use(swStats.getMiddleware({
+	name: addonInterface.manifest.name,
+	version: addonInterface.manifest.version,
+	authentication: true,
+	onAuthenticate: function (req, username, password) {
+		// simple check for username and password
+		const User = process.env.USER?process.env.USER:'stremio'
+		const Pass = process.env.PASS?process.env.PASS:'stremioIsTheBest'
+		return ((username === User
+			&& (password === Pass)))
+	}
+}))
 
 app.get('/', (_, res) => {
 	res.end();
