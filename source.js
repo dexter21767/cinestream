@@ -1,5 +1,5 @@
 const log = require('./logger');
-const consumet = require('./consumet');
+const consumet = require('./lib/consumet');
 
 const NodeCache = require("node-cache");
 const StreamCache = new NodeCache({ stdTTL: (6 * 60 * 60), checkperiod: (3 * 60 * 60) });
