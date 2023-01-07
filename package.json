@@ -10,6 +10,7 @@
 		"@consumet/extensions": "^1.2.11",
 		"axios": "^0.27.2",
 		"dotenv": "^16.0.3",
+		"express": "^4.18.2",
 		"free-proxy": "^0.2.1",
 		"iso-639-3": "^3.0.1",
 		"node-cache": "^5.1.2",
