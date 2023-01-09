@@ -1,10 +1,8 @@
 const log = require('./logger');
-const consumet = require('./lib/consumet');
-const noyyverse = require('./lib/nollyverse')
 const sources = require('./lib/sources')
 
 const NodeCache = require("node-cache");
-const { restart } = require('nodemon');
+
 const StreamCache = new NodeCache({ stdTTL: (6 * 60 * 60), checkperiod: (3 * 60 * 60) });
 
  
@@ -14,14 +12,12 @@ async function stream(type, id) {
         if (cached) return cached
         console.log("stream", type, id)
         log.info("stream: "+ type +' '+id)
-        let streams;
         const promises=[];
         if (id.match(/tt\d+(:\d+)?(:\d+)?/i)){
             const [tmdb_id,season,episode] = id.split(":");
             for (const key in sources.movies) {
                 promises.push(sources.movies[key](type,tmdb_id, episode, season).catch(e => { console.error(e) }));
             }  
-            streams = await consumet.Movie(type,tmdb_id,episode,season)
 
         }
         else if(id.match(/kitsu:\d+(:\d+)?/i)){
@@ -30,10 +26,8 @@ async function stream(type, id) {
             for (const key in sources.anime) {
                 promises.push(sources.anime[key](kitsu_id,episode).catch(e => { console.error(e) }));
             }  
-            streams = await consumet.Anime(kitsu_id,episode)
-
         }
-        streams = await Promise.allSettled(promises).then(promises=>{
+        let streams = await Promise.allSettled(promises).then(promises=>{
             let streams = []
             promises.forEach(({status,value})=>{
                 if(status == "fulfilled"){
@@ -41,7 +35,6 @@ async function stream(type, id) {
                 } 
             })
             return streams
-            
         });
         if (streams) StreamCache.set(id, streams)
         return streams
