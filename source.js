@@ -34,7 +34,8 @@ async function stream(type, id) {
                     streams = streams.concat(value)
                 } 
             })
-            return streams
+            return streams.filter(Boolean);
+
         });
         if (streams) StreamCache.set(id, streams)
         return streams
