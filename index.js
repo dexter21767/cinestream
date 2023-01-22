@@ -42,7 +42,8 @@ app.get('/manifest.json', (_, res) => {
 });
 
 app.get('/stream/:type/:id/:extra?.json', async (req, res) => {
-	res.setHeader('Cache-Control', 'max-age=86400, public');
+	//res.setHeader('Cache-Control', 'max-age=86400, public');
+	res.setHeader('Cache-Control', 'max-age=3600, must-revalidate, stale-while-revalidate=1800, stale-if-error=1800, public');
 	res.setHeader('Content-Type', 'application/json');
 	const args = req.params;
 
@@ -60,7 +61,7 @@ app.get('/stream/:type/:id/:extra?.json', async (req, res) => {
 app.get('/sub.vtt', async (req, res) => {
 	try {
 
-		res.setHeader('Cache-Control', 'max-age=86400,staleRevalidate=stale-while-revalidate, staleError=stale-if-error, public');
+		res.setHeader('Cache-Control', 'max-age=3600, must-revalidate, stale-while-revalidate=1800, stale-if-error=1800, public');
 		let url,proxy;
 		if (req?.query?.proxy) proxy = JSON.parse(Buffer.from(req.query.proxy, 'base64').toString());
 		if (req?.query?.from) url = req.query.from
