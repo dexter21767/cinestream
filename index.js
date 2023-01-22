@@ -73,7 +73,6 @@ app.get('/sub.vtt', async (req, res) => {
 		//console.log(await sub.CheckUrl()) 
 		let file = await sub.getSubtitle();
 		//console.log(file)
-		/*//console.log("file",file)*/
 		if (!file?.subtitle) throw file.status
 		res.setHeader('Content-Type', 'text/vtt;charset=UTF-8');
 		res.end(file.subtitle)
