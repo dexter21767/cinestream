@@ -3,7 +3,7 @@ const sources = require('./lib/sources')
 
 const NodeCache = require("node-cache");
 
-const StreamCache = new NodeCache({ stdTTL: (6 * 60 * 60), checkperiod: (3 * 60 * 60) });
+const StreamCache = new NodeCache({ stdTTL: (0.5 * 60 * 60), checkperiod: (0.5 * 60 * 60) });
 
  
 async function stream(type, id) {
