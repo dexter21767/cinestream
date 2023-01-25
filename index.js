@@ -15,7 +15,6 @@ app.use('/assets', express.static(path.join(__dirname, 'vue', 'dist', 'assets'))
 
 app.use(cors())
 
-
 app.use(swStats.getMiddleware({
 	name: manifest.name,
 	version: manifest.version,
@@ -32,7 +31,6 @@ app.use(swStats.getMiddleware({
 app.get('/', (_, res) => {
 	res.end();
 });
-
 
 app.get('/manifest.json', (_, res) => {
 	res.setHeader('Cache-Control', 'max-age=86400, public');
@@ -85,6 +83,5 @@ app.get('/sub.vtt', async (req, res) => {
 		console.error(err);
 	}
 })
-
 
 module.exports = app
