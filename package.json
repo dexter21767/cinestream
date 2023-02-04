@@ -18,6 +18,7 @@
 		"protobufjs": "^7.1.2",
 		"random-useragent": "^0.5.0",
 		"recaptchav3bypass": "^1.0.1",
+		"serve-index": "^1.9.1",
 		"slugify": "^1.6.5",
 		"stremio-addon-sdk": "github:dexter21767/stremio-addon-sdk",
 		"sub2vtt": "github:dexter21767/sub2vtt",

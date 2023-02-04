@@ -1,4 +1,5 @@
 const express = require("express");
+const serveIndex = require('serve-index');
 const app = express();
 const cors = require('cors');
 const path = require('path');
@@ -10,6 +11,9 @@ const manifest = require("./manifest.json");
 
 app.set('trust proxy', true)
 
+app.use('/logs', express.static(path.join(__dirname, 'logs')), serveIndex('logs', {'icons': true}))
+
+//app.use('/logs', express.static(path.join(__dirname, 'logs')));
 app.use('/configure', express.static(path.join(__dirname, 'vue', 'dist')));
 app.use('/assets', express.static(path.join(__dirname, 'vue', 'dist', 'assets')));
 
