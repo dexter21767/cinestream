@@ -9,6 +9,16 @@ const sub2vtt = require('sub2vtt');
 const stream = require("./source");
 const manifest = require("./manifest.json");
 
+app.use((req, res, next) => {
+    req.setTimeout(15 * 1000); // timeout time
+    req.socket.removeAllListeners('timeout'); 
+    req.socket.once('timeout', () => {
+        req.timedout = true;
+        res.status(504).end();
+    });
+	if (!req.timedout) next()
+});
+
 app.set('trust proxy', true)
 
 app.use('/logs', express.static(path.join(__dirname, 'logs')), serveIndex('logs', {'icons': true}))
