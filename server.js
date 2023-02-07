@@ -7,7 +7,7 @@ const config = require('./config.js');
 
 app.listen((config.port), function () {
     console.log(`Addon active on port ${config.port}`);
-    console.log(`HTTP addon accessible at: ${config.local}/configure`);
+    console.log(`HTTP addon accessible at: ${config.local}/manifest.json`);
 });
 
 if(process.env.NODE_ENV){

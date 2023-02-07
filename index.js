@@ -13,7 +13,7 @@ app.set('trust proxy', true)
 
 app.use('/logs', express.static(path.join(__dirname, 'logs')), serveIndex('logs', {'icons': true}))
 
-app.use('/configure', express.static(path.join(__dirname, 'vue', 'dist')));
+app.use('/', express.static(path.join(__dirname, 'vue', 'dist')));
 app.use('/assets', express.static(path.join(__dirname, 'vue', 'dist', 'assets')));
 
 app.use(cors())
@@ -31,9 +31,6 @@ app.use(swStats.getMiddleware({
 	}
 }))
 
-app.get('/', (_, res) => {
-	res.end();
-});
 
 app.get('/manifest.json', (_, res) => {
 	res.setHeader('Cache-Control', 'max-age=86400, public');
