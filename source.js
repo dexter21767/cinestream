@@ -1,15 +1,8 @@
-const log = require('./logger');
+const log = require('./lib/logger');
 const sources = require('./lib/sources')
-
-const NodeCache = require("node-cache");
-
-const StreamCache = new NodeCache({ stdTTL: (0.5 * 60 * 60), checkperiod: (0.5 * 60 * 60) });
-
  
 async function stream(type, id) {
     try {
-        cached = StreamCache.get(id)
-        if (cached) return cached
         console.log("stream", type, id)
         log.info("stream: "+ type +' '+id)
         const promises=[];
@@ -27,6 +20,8 @@ async function stream(type, id) {
                 promises.push(sources.anime[key](kitsu_id,episode).catch(e => { console.error(e) }));
             }  
         }
+
+
         let streams = await Promise.allSettled(promises).then(promises=>{
             let streams = []
             promises.forEach(({status,value})=>{
@@ -37,7 +32,6 @@ async function stream(type, id) {
             return streams.filter(Boolean);
 
         });
-        if (streams) StreamCache.set(id, streams)
         return streams
     } catch (e) {
         console.error(e)
