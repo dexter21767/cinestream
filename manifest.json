@@ -1,29 +1,26 @@
 {
     "id": "community.cinestream",
-    "version": "0.2.3",
+    "version": "0.3.0",
     "name": "Cinestream by dexter21767",
-    "description": "fast stream over https with multiple subtitles directly from cinemeta and anime kitsu, by Dexter21767",
+    "description": "fast stream over https with multiple subtitles directly from cinemeta, by Dexter21767",
     "logo": "https://www.freeiconspng.com/thumbs/movie-icon/movie-icon-24.png",
     "background": "https://github.com/Stremio/stremio-art/raw/main/originals/reiphantomhive1.png",
-    "contactEmail": "ahmidiyasser@gmail.com",
+    "contactEmail": "dexter21767@gmail.com",
     "catalogs": [],
     "resources": [
         {
             "name": "stream",
             "types": [
                 "movie",
-                "series",
-                "anime"
+                "series"
             ],
             "idPrefixes": [
-                "tt",
-                "kitsu:"
+                "tt"
             ]
         }
     ],
     "types": [
         "movie",
-        "series",
-        "anime"
+        "series"
     ]
 }

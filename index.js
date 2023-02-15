@@ -8,9 +8,10 @@ const sub2vtt = require('sub2vtt');
 
 const stream = require("./source");
 const manifest = require("./manifest.json");
+const ErrorHandler = require("./ErrorHandler.js");
 
 app.use((req, res, next) => {
-    req.setTimeout(15 * 1000); // timeout time
+    req.setTimeout(150 * 1000); // timeout time
     req.socket.removeAllListeners('timeout'); 
     req.socket.once('timeout', () => {
         req.timedout = true;
@@ -50,20 +51,26 @@ app.get('/manifest.json', (_, res) => {
 });
 
 app.get('/stream/:type/:id/:extra?.json', async (req, res) => {
-	//res.setHeader('Cache-Control', 'max-age=86400, public');
-	res.setHeader('Cache-Control', 'max-age=3600, must-revalidate, stale-while-revalidate=1800, stale-if-error=1800, public');
-	res.setHeader('Content-Type', 'application/json');
-	const args = req.params;
-
-	console.log("addon.js streams:", args);
-	if (args.id.match(/tt[^0-9]*/i)||args.id.match(/kitsu:[^0-9]*/i)) {
-		return Promise.resolve(stream(args.type, args.id,))
-		.then((streams) => {res.send({ streams: streams }); });
-		//return Promise.resolve({ streams: [] });
-	} else {
-		res.send(Promise.resolve({ streams: [] }));
-	}	
-	res.end();
+	try{
+		//res.setHeader('Cache-Control', 'max-age=86400, public');
+		res.setHeader('Content-Type', 'application/json');
+		const args = req.params;
+		let streams = [];
+		console.log("addon.js streams:", args);
+		if (args.id.match(/tt[^0-9]*/i)||args.id.match(/kitsu:[^0-9]*/i)) {
+			streams = await Promise.resolve(stream(args.type, args.id,))
+		} 
+		if(streams){
+			res.setHeader('Cache-Control', 'max-age=3600, must-revalidate, stale-while-revalidate=1800, stale-if-error=1800, public');
+			res.send({ streams: streams }); 
+		} else {
+			res.send({ streams: [] });
+		}
+	}catch(e){
+		log.error(e);
+		next(e);
+	}
+	
 })
 
 app.get('/sub.vtt', async (req, res) => {
@@ -83,15 +90,14 @@ app.get('/sub.vtt', async (req, res) => {
 		//console.log(file)
 		if (!file?.subtitle) throw file.status
 		res.setHeader('Content-Type', 'text/vtt;charset=UTF-8');
-		res.end(file.subtitle)
-		res.end()
-
+		res.send(file.subtitle);
+		res.end;
 	} catch (err) {
-		res.setHeader('Content-Type', 'application/json');
-		res.end()
-
 		console.error(err);
+		next(err);
 	}
 })
+
+app.use(ErrorHandler)
 
 module.exports = app
