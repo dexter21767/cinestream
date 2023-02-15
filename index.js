@@ -60,10 +60,11 @@ app.get('/stream/:type/:id/:extra?.json', async (req, res) => {
 		if (args.id.match(/tt[^0-9]*/i)||args.id.match(/kitsu:[^0-9]*/i)) {
 			streams = await Promise.resolve(stream(args.type, args.id,))
 		} 
-		if(streams){
+		if(streams?.length){
 			res.setHeader('Cache-Control', 'max-age=3600, must-revalidate, stale-while-revalidate=1800, stale-if-error=1800, public');
 			res.send({ streams: streams }); 
 		} else {
+			res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
 			res.send({ streams: [] });
 		}
 	}catch(e){
