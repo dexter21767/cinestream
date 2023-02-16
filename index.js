@@ -18,7 +18,7 @@ app.use((req, res, next) => {
     req.socket.once('timeout', () => {
         req.timedout = true;
 		res.setHeader('Cache-Control', CacheControl.off);
-        res.status(504).end();
+        res.status(554).end();
     });
 	if (!req.timedout) next()
 });
@@ -64,7 +64,7 @@ app.get('/stream/:type/:id/:extra?.json', async (req, res) => {
 		if (id.match(/tt[^0-9]*/i)||id.match(/kitsu:[^0-9]*/i)) {
 			streams = await Promise.resolve(stream(type, id))
 		} 
-		
+
 		if(streams?.length){
 			res.setHeader('Content-Type', 'application/json');
 			res.setHeader('Cache-Control', CacheControl.on);
