@@ -55,7 +55,9 @@ const log = require('./lib/logger');
 const { spawn } = require('node:child_process');
 
 const respawn = spawned => {
-    spawned.on('close', () => {
+    spawned.on('close', (code) => {
+        console.log(`child process exited with code ${code}`);
+        log.error(`child process exited with code ${code}`);
       respawn(spawn('node', ['server.js']))
 
     })
