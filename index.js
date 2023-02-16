@@ -13,6 +13,21 @@ const ErrorHandler = require("./ErrorHandler.js");
 
 
 
+app.use((req, res, next) => {
+    req.setTimeout(2 * 60 * 1000); // timeout time
+    req.socket.removeAllListeners('timeout'); 
+    req.socket.once('timeout', () => {
+        req.timedout = true;
+		res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+		res.status(504).json({
+			success: false,
+			status: 504,
+			message: 'request timeout',
+		}).end();
+    });
+	if (!req.timedout) next()
+});
+
 app.set('trust proxy', true)
 
 app.use('/logs', express.static(path.join(__dirname, 'logs')), serveIndex('logs', {'icons': true}))
@@ -35,20 +50,6 @@ app.use(swStats.getMiddleware({
 	}
 }))
 
-app.use((req, res, next) => {
-    req.setTimeout(2 * 60 * 1000); // timeout time
-    req.socket.removeAllListeners('timeout'); 
-    req.socket.once('timeout', () => {
-        req.timedout = true;
-		res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-		res.status(504).json({
-			success: false,
-			status: 504,
-			message: 'request timeout',
-		}).end();
-    });
-	if (!req.timedout) next()
-});
 
 app.get('/manifest.json', (_, res) => {
 	res.setHeader('Cache-Control', 'max-age=86400, public');
