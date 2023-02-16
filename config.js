@@ -1,6 +1,11 @@
 var env = process.env.NODE_ENV ? 'beamup':'local';
 
-var config = {}
+var config = {
+  CacheControl :{
+	  on: 'max-age=3600, must-revalidate, stale-while-revalidate=1800, stale-if-error=1800, public',
+	  off: 'no-cache, no-store, must-revalidate'
+  }
+}
 
 switch (env) {
     case 'beamup':

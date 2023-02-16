@@ -6,15 +6,18 @@ const path = require('path');
 const swStats = require('swagger-stats')
 const sub2vtt = require('sub2vtt');
 
+const log = require('./lib/logger');
 const stream = require("./source");
 const manifest = require("./manifest.json");
 const ErrorHandler = require("./ErrorHandler.js");
+const {CacheControl} = require('./config.js');
 
 app.use((req, res, next) => {
     req.setTimeout(2 * 60 * 1000); // timeout time
     req.socket.removeAllListeners('timeout'); 
     req.socket.once('timeout', () => {
         req.timedout = true;
+		res.setHeader('Cache-Control', CacheControl.off);
         res.status(504).end();
     });
 	if (!req.timedout) next()
@@ -44,7 +47,7 @@ app.use(swStats.getMiddleware({
 
 
 app.get('/manifest.json', (_, res) => {
-	res.setHeader('Cache-Control', 'max-age=86400, public');
+	res.setHeader('Cache-Control', CacheControl.on);
 	res.setHeader('Content-Type', 'application/json');
 	res.send(manifest);
 	res.end();
@@ -52,19 +55,23 @@ app.get('/manifest.json', (_, res) => {
 
 app.get('/stream/:type/:id/:extra?.json', async (req, res) => {
 	try{
-		//res.setHeader('Cache-Control', 'max-age=86400, public');
-		res.setHeader('Content-Type', 'application/json');
-		const args = req.params;
+
+		console.log("addon.js streams:", req.params);
+
+		const {type,id} = req.params;
 		let streams = [];
-		console.log("addon.js streams:", args);
-		if (args.id.match(/tt[^0-9]*/i)||args.id.match(/kitsu:[^0-9]*/i)) {
-			streams = await Promise.resolve(stream(args.type, args.id,))
+
+		if (id.match(/tt[^0-9]*/i)||id.match(/kitsu:[^0-9]*/i)) {
+			streams = await Promise.resolve(stream(type, id))
 		} 
+		
 		if(streams?.length){
-			res.setHeader('Cache-Control', 'max-age=3600, must-revalidate, stale-while-revalidate=1800, stale-if-error=1800, public');
+			res.setHeader('Content-Type', 'application/json');
+			res.setHeader('Cache-Control', CacheControl.on);
 			res.send({ streams: streams }); 
 		} else {
-			res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+			res.setHeader('Content-Type', 'application/json');
+			res.setHeader('Cache-Control', CacheControl.off);
 			res.send({ streams: [] });
 		}
 	}catch(e){
@@ -77,24 +84,28 @@ app.get('/stream/:type/:id/:extra?.json', async (req, res) => {
 app.get('/sub.vtt', async (req, res) => {
 	try {
 
-		res.setHeader('Cache-Control', 'max-age=3600, must-revalidate, stale-while-revalidate=1800, stale-if-error=1800, public');
 		let url,proxy;
+		
 		if (req?.query?.proxy) proxy = JSON.parse(Buffer.from(req.query.proxy, 'base64').toString());
 		if (req?.query?.from) url = req.query.from
 		else throw 'error: no url';
+
 		console.log("url", url,"proxy",proxy)
+
 		generated = sub2vtt.gerenateUrl(url,{referer:"someurl"});
 		console.log(generated);
+		
 		let sub = new sub2vtt(url ,proxy);
-		//console.log(await sub.CheckUrl()) 
+		
 		let file = await sub.getSubtitle();
-		//console.log(file)
-		if (!file?.subtitle) throw file.status
+		
+		if (!file?.subtitle?.length) throw file.status
+		res.setHeader('Cache-Control', CacheControl.on);
 		res.setHeader('Content-Type', 'text/vtt;charset=UTF-8');
 		res.send(file.subtitle);
 		res.end;
 	} catch (err) {
-		console.error(err);
+		log.error(err);
 		next(err);
 	}
 })
