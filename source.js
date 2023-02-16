@@ -8,17 +8,10 @@ async function stream(type, id) {
         const promises=[];
         if (id.match(/tt\d+(:\d+)?(:\d+)?/i)){
             const [tmdb_id,season,episode] = id.split(":");
-            for (const key in sources.movies) {
-                promises.push(sources.movies[key](type,tmdb_id, episode, season).catch(e => { console.error(e) }));
+            for (const key in sources) {
+                promises.push(sources[key](type,tmdb_id, episode, season).catch(e => { console.error(e) }));
             }  
 
-        }
-        else if(id.match(/kitsu:\d+(:\d+)?/i)){
-            const [kitsu_id,episode] = id.match(/\d+/ig);
-            console.log(kitsu_id,episode)
-            for (const key in sources.anime) {
-                promises.push(sources.anime[key](kitsu_id,episode).catch(e => { console.error(e) }));
-            }  
         }
 
 
