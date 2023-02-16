@@ -22,7 +22,6 @@
 		"slugify": "^1.6.5",
 		"stremio-addon-sdk": "^1.6.10",
 		"sub2vtt": "github:dexter21767/sub2vtt",
-		"swagger-stats": "^0.99.5",
 		"underscore": "^1.13.6",
 		"winston-daily-rotate-file": "^4.7.1"
 	},
