@@ -75,6 +75,7 @@ app.get('/stream/:type/:id/:extra?.json', async (req, res) => {
 			res.send({ streams: [] });
 		}
 	}catch(e){
+		console.error(e);
 		log.error(e);
 		next(e);
 	}
@@ -104,9 +105,10 @@ app.get('/sub.vtt', async (req, res) => {
 		res.setHeader('Content-Type', 'text/vtt;charset=UTF-8');
 		res.send(file.subtitle);
 		res.end;
-	} catch (err) {
-		log.error(err);
-		next(err);
+	} catch (e) {
+		console.error(e);
+		log.error(e);
+		next(e);
 	}
 })
 

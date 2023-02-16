@@ -34,8 +34,8 @@ async function stream(type, id) {
         });
         return streams
     } catch (e) {
-        console.error(e)
         log.error(e)
+        console.error(e)
     }
 
 }
