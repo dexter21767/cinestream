@@ -15,7 +15,7 @@ async function stream(type, id) {
         }
 
 
-        let streams = await Promise.allSettled(promises).then(promises=>{
+        return await Promise.allSettled(promises).then(promises=>{
             let streams = []
             promises.forEach(({status,value})=>{
                 if(status == "fulfilled"){
@@ -25,7 +25,6 @@ async function stream(type, id) {
             return streams.filter(Boolean);
 
         });
-        return streams
     } catch (e) {
         console.error(e)
         log.error(e)
