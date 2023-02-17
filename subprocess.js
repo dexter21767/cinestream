@@ -37,6 +37,7 @@ var log = winston.createLogger({
   transports: transports
 });
 
+log.info(process.env)
 
 const { spawn } = require('node:child_process');
 
