@@ -40,7 +40,9 @@ var log = winston.createLogger({
 
 
 console.log("process.env:",process.env);
-log.info("process.env:",process.env)
+
+log.info("process.env:")
+log.info(JSON.stringify(process.env))
 
 const { spawn } = require('node:child_process');
 
@@ -52,13 +54,13 @@ const respawn = spawned => {
 
     })
     spawned.stdout.on('data', (data) => {
-        console.log(`stdout: ${data}`);
-        log.info(`stdout: ${data}`);
+        console.log(`${data}`);
+        log.info(`${data}`);
     });
     
     spawned.stderr.on('data', (data) => {
-        console.error(`stderr: ${data}`);
-        log.error(`stderr: ${data}`);
+        console.error(`${data}`);
+        log.error(`${data}`);
     });
   }
   respawn(spawn('node', ['server.js']))
