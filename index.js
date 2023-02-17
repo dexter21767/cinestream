@@ -16,7 +16,7 @@ app.use((req, res, next) => {
     req.socket.removeAllListeners('timeout'); 
     req.socket.once('timeout', () => {
         req.timedout = true;
-		res.setHeader('Cache-Control', CacheControl.off);
+		//res.setHeader('Cache-Control', CacheControl.off);
         res.status(554).end();
     });
 	if (!req.timedout) next()
@@ -24,7 +24,7 @@ app.use((req, res, next) => {
 
 app.set('trust proxy', true)
 
-app.use('/logs', express.static(path.join(__dirname, 'logs')), serveIndex('logs', {'icons': true}))
+app.use('/logs', express.static(path.join(__dirname, 'logs'),{etag: false}), serveIndex('logs', {'icons': true,'view':'details '}))
 
 app.use('/', express.static(path.join(__dirname, 'vue', 'dist')));
 app.use('/assets', express.static(path.join(__dirname, 'vue', 'dist', 'assets')));
