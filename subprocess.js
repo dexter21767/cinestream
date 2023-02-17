@@ -38,11 +38,11 @@ var log = winston.createLogger({
 });
 
 
-/*
+
 console.log("process.env:", process.env);
 log.info("process.env:");
 log.info(JSON.stringify(process.env));
-*/
+
 
 const { spawn } = require('node:child_process');
 
