@@ -1,56 +1,45 @@
-/*
-const config = require('./config.js');
+var winston = require('winston');
+require('winston-daily-rotate-file');
 
-const path = require('path');
-const express = require("express");
-const serveIndex = require('serve-index');
-const app = express();
+var transports = [
+  new winston.transports.DailyRotateFile({
+    filename: 'combined-%DATE%.log',
+    dirname: "logs",
+    datePattern: 'YYYY-MM-DD-HH',
+    zippedArchive: false,
+    maxSize: '20m',
+    maxFiles: '14d'
+  }),
+  new winston.transports.DailyRotateFile({
+    filename: 'error-%DATE%.log',
+    dirname: "logs",
+    datePattern: 'YYYY-MM-DD-HH',
+    zippedArchive: false,
+    maxSize: '20m',
+    maxFiles: '14d', 
+    level: 'error' 
+  }),
+]
 
-app.use('/logs', express.static(path.join(__dirname, 'logs')), serveIndex('logs', {'icons': true}))
+const { combine, timestamp, printf } = winston.format;
 
-app.listen((config.port), function () {
-    console.log(`subprocess active on port 63562`);
+const myFormat = printf(({ level, message, timestamp }) => {
+  
+  timestamp = new Date(timestamp).toTimeString().split(' ')[0];
+  return `'${timestamp}' ${level}: ${message}`;
+});
+
+var log = winston.createLogger({
+  format: combine(
+    timestamp(),
+    myFormat
+  ),
+  transports: transports
 });
 
 
 
-/*
-while (true){
-    
-        console.log("starting")
-        const addon = spawnSync('node', ['server.js']);
-        
-        console.log("addon", Buffer.from(addon.stderr).toString());
-        log.error(`child process terminated \n  ${Buffer.from(addon.stderr).toString()}`);
 
-}
-
-function run(addon){
-    addon.stdout.on('data', (data) => {
-        console.log(`stdout: ${data}`);
-        log.info(`stdout: ${data}`);
-    });
-    
-    addon.stderr.on('data', (data) => {
-        console.error(`stderr: ${data}`);
-        log.error(`stderr: ${data}`);
-    });
-    
-    addon.on('close', (code) => {
-        status = code;
-        console.log(`child process exited with code ${code}`);
-        log.info(`child process exited with code ${code}`);
-    
-        console.log(`restarting child process ...`);
-        log.info(`restarting child process ...`);
-       return; 
-    });
-}
-
-*/
-
-
-const log = require('./lib/logger');
 
 const { spawn } = require('node:child_process');
 
