@@ -52,7 +52,7 @@ app.get('/manifest.json', (_, res) => {
 	res.end();
 });
 
-app.get('/stream/:type/:id/:extra?.json', async (req, res) => {
+app.get('/stream/:type/:id/:extra?.json', async (req, res,next) => {
 	try{
 
 		console.log("addon.js streams:", req.params);
@@ -80,7 +80,7 @@ app.get('/stream/:type/:id/:extra?.json', async (req, res) => {
 	
 })
 
-app.get('/sub.vtt', async (req, res) => {
+app.get('/sub.vtt', async (req, res,next) => {
 	try {
 
 		let url,proxy;
