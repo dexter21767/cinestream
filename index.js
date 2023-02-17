@@ -6,7 +6,6 @@ const path = require('path');
 const swStats = require('swagger-stats')
 const sub2vtt = require('sub2vtt');
 
-const log = require('./lib/logger');
 const stream = require("./source");
 const manifest = require("./manifest.json");
 const ErrorHandler = require("./ErrorHandler.js");
@@ -76,7 +75,6 @@ app.get('/stream/:type/:id/:extra?.json', async (req, res) => {
 		}
 	}catch(e){
 		console.error(e);
-		log.error(e);
 		next(e);
 	}
 	
@@ -107,7 +105,6 @@ app.get('/sub.vtt', async (req, res) => {
 		res.end;
 	} catch (e) {
 		console.error(e);
-		log.error(e);
 		next(e);
 	}
 })

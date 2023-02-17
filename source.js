@@ -1,10 +1,8 @@
-const log = require('./lib/logger');
 const sources = require('./lib/sources')
  
 async function stream(type, id) {
     try {
         console.log("stream", type, id)
-        log.info("stream: "+ type +' '+id)
         const promises=[];
         if (id.match(/tt\d+(:\d+)?(:\d+)?/i)){
             const [tmdb_id,season,episode] = id.split(":");
@@ -34,7 +32,6 @@ async function stream(type, id) {
         });
         return streams
     } catch (e) {
-        log.error(e)
         console.error(e)
     }
 
