@@ -6,6 +6,9 @@
 		"start": "node subprocess.js",
 		"dev": "nodemon server.js"
 	},
+	"engines": {
+		"node": "19.x"
+	},
 	"dependencies": {
 		"@consumet/extensions": "^1.4.1",
 		"axios": "^0.27.2",
