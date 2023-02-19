@@ -11,8 +11,21 @@ const manifest = require("./manifest.json");
 const ErrorHandler = require("./ErrorHandler.js");
 const {CacheControl} = require('./config.js');
 
+app.use(swStats.getMiddleware({
+	name: manifest.name,
+	version: manifest.version,
+	authentication: true,
+	onAuthenticate: function (req, username, password) {
+		// simple check for username and password
+		const User = process.env.USER?process.env.USER:'stremio'
+		const Pass = process.env.PASS?process.env.PASS:'stremioIsTheBest'
+		return ((username === User
+			&& (password === Pass)))
+	}
+}))
+
 app.use((req, res, next) => {
-    req.setTimeout(2 * 60 * 1000); // timeout time
+    req.setTimeout(15 * 1000); // timeout time
     req.socket.removeAllListeners('timeout'); 
     req.socket.once('timeout', () => {
         req.timedout = true;
@@ -30,20 +43,6 @@ app.use('/', express.static(path.join(__dirname, 'vue', 'dist')));
 app.use('/assets', express.static(path.join(__dirname, 'vue', 'dist', 'assets')));
 
 app.use(cors())
-
-app.use(swStats.getMiddleware({
-	name: manifest.name,
-	version: manifest.version,
-	authentication: true,
-	onAuthenticate: function (req, username, password) {
-		// simple check for username and password
-		const User = process.env.USER?process.env.USER:'stremio'
-		const Pass = process.env.PASS?process.env.PASS:'stremioIsTheBest'
-		return ((username === User
-			&& (password === Pass)))
-	}
-}))
-
 
 app.get('/manifest.json', (_, res) => {
 	res.setHeader('Cache-Control', CacheControl.on);
