@@ -30,7 +30,7 @@ app.use((req, res, next) => {
     req.socket.once('timeout', () => {
         req.timedout = true;
 		//res.setHeader('Cache-Control', CacheControl.off);
-        res.status(554).end();
+        res.status(504).end();
     });
 	if (!req.timedout) next()
 });
