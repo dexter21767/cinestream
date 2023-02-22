@@ -47,18 +47,20 @@ let time = Date.now();
 const respawn = spawned => {
   spawned.on('close', (code) => {
     console.log(`child process exited with code ${code}`);
-    log.error(`child process exited with code ${code}`);
+    log.error(`child process exited with code ${code} , time: ${((Date.now() - time)/(1000*60))} mins , count: ${count}`);
     
     if(((Date.now() - time)/(1000*60)) >= 60 ){
       count = 0;
       time = Date.now();
     }
     
-    if(((Date.now() - time)/(1000*60)) < 60 && count<20) {
+    if(((Date.now() - time)/(1000*60)) < 60 && count<10) {
       respawn(spawn('node', ['server.js']));
       count++;
-    }
-
+    }else {
+      log.info('spawning fallback server')
+      respawn(spawn('node', ['fallback.js']))
+  }
   })
 
   spawned.stdout.on('data', (data) => {
