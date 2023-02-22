@@ -89,7 +89,7 @@ app.get('/stream/:type/:id/:extra?.json', async (req, res,next) => {
 		}
 	}catch(e){
 		console.error(e);
-		next(e);
+		//next(e);
 	}
 	
 })
@@ -119,7 +119,7 @@ app.get('/sub.vtt', async (req, res,next) => {
 		res.end;
 	} catch (e) {
 		console.error(e);
-		next(e);
+		//next(e);
 	}
 })
 
@@ -150,10 +150,10 @@ app.get('/CineNexa', async (req, res,next) => {
 		res.end;
 	} catch (e) {
 		console.error(e);
-		next(e);
+		//next(e);
 	}
 })
  
-app.use(ErrorHandler)
+//app.use(ErrorHandler)
 
 module.exports = app
