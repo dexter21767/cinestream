@@ -8,7 +8,9 @@ var transports = [
     datePattern: 'YYYY-MM-DD-HH',
     zippedArchive: false,
     maxSize: '20m',
-    maxFiles: '14d'
+    maxFiles: '14d',
+    createSymlink: true,
+    symlinkName: 'combined.log',
   }),
   new winston.transports.DailyRotateFile({
     filename: 'error-%DATE%.log',
@@ -17,7 +19,9 @@ var transports = [
     zippedArchive: false,
     maxSize: '20m',
     maxFiles: '14d',
-    level: 'error'
+    level: 'error',
+    createSymlink: true,
+    symlinkName: 'error.log',
   }),
 ]
 

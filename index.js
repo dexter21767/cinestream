@@ -139,13 +139,13 @@ app.get('/CineNexa', async (req, res,next) => {
 		} 
 
 		if(streams?.length){
-			res.setHeader('Content-Type', 'application/json');
+			res.setHeader('Content-Type', 'text/html');
 			res.setHeader('Cache-Control', CacheControl.on);
-			res.send({ streams: streams }); 
+			res.send(JSON.stringify({ streams: streams })); 
 		} else {
-			res.setHeader('Content-Type', 'application/json');
+			res.setHeader('Content-Type', 'text/html');
 			res.setHeader('Cache-Control', CacheControl.off);
-			res.send({ streams: [] });
+			res.send(JSON.stringify({ streams: [] }));
 		}
 		res.end;
 	} catch (e) {
