@@ -123,6 +123,37 @@ app.get('/sub.vtt', async (req, res,next) => {
 	}
 })
 
+app.get('/CineNexa', async (req, res,next) => {
+	try {
+
+		console.log(req.query)
+		const {type,season, episode, imdbId, tmdbId, traktId, name, releaseYear} = req.query;
+		
+		const stremioType = type == "show"? "series":"movie";
+		let id = imdbId;
+		if(season && episode) id += `:${season}:${episode}`;
+		let streams = [];
+		console.log("id",id);
+		if (imdbId && id) {
+			streams = await Promise.resolve(stream(stremioType, id))
+		} 
+
+		if(streams?.length){
+			res.setHeader('Content-Type', 'application/json');
+			res.setHeader('Cache-Control', CacheControl.on);
+			res.send({ streams: streams }); 
+		} else {
+			res.setHeader('Content-Type', 'application/json');
+			res.setHeader('Cache-Control', CacheControl.off);
+			res.send({ streams: [] });
+		}
+		res.end;
+	} catch (e) {
+		console.error(e);
+		next(e);
+	}
+})
+ 
 app.use(ErrorHandler)
 
 module.exports = app
