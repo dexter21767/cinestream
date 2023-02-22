@@ -3,7 +3,6 @@
 	"version": "0.3.1",
 	"description": "fast stream over https with multiple subtitles directly from cinemeta, by Dexter21767",
 	"scripts": {
-		"preinstall": "npm cache clean --force",
 		"start": "node subprocess.js",
 		"dev": "nodemon server.js"
 	},
