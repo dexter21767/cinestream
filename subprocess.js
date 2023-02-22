@@ -37,15 +37,28 @@ var log = winston.createLogger({
   transports: transports
 });
 
-log.info(JSON.stringify(process.env))
+//log.info(JSON.stringify(process.env))
+
 
 const { spawn } = require('node:child_process');
 
+let count = 0;
+let time = Date.now(); 
 const respawn = spawned => {
   spawned.on('close', (code) => {
     console.log(`child process exited with code ${code}`);
     log.error(`child process exited with code ${code}`);
-    respawn(spawn('node', ['server.js']))
+    
+    if(((Date.now() - time)/(1000*60)) >= 60 ){
+      count = 0;
+      time = Date.now();
+    }
+    
+    if(((Date.now() - time)/(1000*60)) < 60 && count<20) {
+      respawn(spawn('node', ['server.js']));
+      count++;
+    }
+
   })
 
   spawned.stdout.on('data', (data) => {
