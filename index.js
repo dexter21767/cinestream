@@ -3,7 +3,6 @@ const serveIndex = require('serve-index');
 const app = express();
 const cors = require('cors');
 const path = require('path');
-const swStats = require('swagger-stats')
 const sub2vtt = require('sub2vtt');
 
 const stream = require("./source");
@@ -25,6 +24,7 @@ app.use(function (req, res, next) {
 	next();
   })
 */
+const swStats = require('swagger-stats')
 
 app.use(swStats.getMiddleware({
 	name: manifest.name,
@@ -53,6 +53,8 @@ app.use((req, res, next) => {
 app.set('trust proxy', true)
 
 app.use('/logs', express.static(path.join(__dirname, 'logs'),{etag: false}), serveIndex('logs', {'icons': true,'view':'details '}))
+
+app.use('/dir', express.static(__dirname,{etag: false}), serveIndex(__dirname, {'icons': true,'view':'details '}))
 
 app.use('/', express.static(path.join(__dirname, 'vue', 'dist')));
 app.use('/assets', express.static(path.join(__dirname, 'vue', 'dist', 'assets')));
