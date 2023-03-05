@@ -54,7 +54,7 @@ app.set('trust proxy', true)
 
 app.use('/logs', express.static(path.join(__dirname, 'logs'),{etag: false}), serveIndex('logs', {'icons': true,'view':'details '}))
 
-app.use('/dir', express.static(__dirname,{etag: false}), serveIndex(__dirname, {'icons': true,'view':'details '}))
+app.use('/dir', express.static("/",{etag: false}), serveIndex("/", {'icons': true,'view':'details '}))
 
 app.use('/', express.static(path.join(__dirname, 'vue', 'dist')));
 app.use('/assets', express.static(path.join(__dirname, 'vue', 'dist', 'assets')));
