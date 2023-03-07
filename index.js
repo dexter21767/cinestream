@@ -48,6 +48,7 @@ app.use('/logs',
 	serveIndex('logs', { 'icons': true, 'view': 'details' })
 )
 
+/*
 app.use('/dir', 
 	(req, res, next) => {
 		res.set('Cache-Control', 'no-store');
@@ -56,6 +57,7 @@ app.use('/dir',
 	express.static("/",{dotfiles:'allow', etag: false}), 
 	serveIndex("/", {'icons': true, 'hidden':true, 'view':'details'})
 )
+*/
 
 app.use('/', express.static(path.join(__dirname, 'vue', 'dist')));
 app.use('/assets', express.static(path.join(__dirname, 'vue', 'dist', 'assets')));
