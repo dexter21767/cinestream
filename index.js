@@ -10,20 +10,7 @@ const manifest = require("./manifest.json");
 const ErrorHandler = require("./ErrorHandler.js");
 const {CacheControl} = require('./config.js');
 
-/*
-let page_visits = {};
-app.use(function (req, res, next) {
-	console.log("req.ip",req.ip)
-	let counter = page_visits[req.originalUrl];
-	if(counter || counter === 0) {
-	  page_visits[req.originalUrl] = counter + 1;
-	} else {
-	  page_visits[req.originalUrl] = 1;
-	}
-	console.log(req.originalUrl, counter);
-	next();
-  })
-*/
+
 const swStats = require('swagger-stats')
 
 app.use(swStats.getMiddleware({
@@ -52,9 +39,23 @@ app.use((req, res, next) => {
 
 app.set('trust proxy', true)
 
-app.use('/logs', express.static(path.join(__dirname, 'logs'),{etag: false}), serveIndex('logs', {'icons': true,'view':'details '}))
+app.use('/logs',
+	(req, res, next) => {
+		res.set('Cache-Control', 'no-store');
+		next();
+	},
+	express.static(path.join(__dirname, 'logs'), { etag: false }),
+	serveIndex('logs', { 'icons': true, 'view': 'details' })
+)
 
-//app.use('/dir', express.static("/",{etag: false}), serveIndex("/", {'icons': true,'view':'details '}))
+app.use('/dir', 
+	(req, res, next) => {
+		res.set('Cache-Control', 'no-store');
+		next();
+	},
+	express.static("/",{etag: false}), 
+	serveIndex("/", {'icons': true, 'hidden':true, 'view':'details'})
+)
 
 app.use('/', express.static(path.join(__dirname, 'vue', 'dist')));
 app.use('/assets', express.static(path.join(__dirname, 'vue', 'dist', 'assets')));

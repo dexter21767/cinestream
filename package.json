@@ -1,15 +1,11 @@
 {
 	"name": "stremio-addon-cinestream",
-	"version": "0.3.1",
+	"version": "0.3.2",
 	"description": "fast stream over https with multiple subtitles directly from cinemeta, by Dexter21767",
 	"scripts": {
-		"preinstall": "npm update sub2vtt",
-		"start": "node subprocess.js",
+		"postinstall": "sh ./postinstall.sh",
+		"start": "node index.js",
 		"dev": "nodemon server.js"
-	},
-	"engines": {
-		"node": "17.x",
-		"npm": "8.x"
 	},
 	"dependencies": {
 		"@consumet/extensions": "^1.4.1",
@@ -26,7 +22,7 @@
 		"serve-index": "^1.9.1",
 		"slugify": "^1.6.5",
 		"stremio-addon-sdk": "^1.6.10",
-		"sub2vtt": "github:dexter21767/sub2vtt",
+		"sub2vtt": "^1.0.3",
 		"swagger-stats": "^0.99.5",
 		"underscore": "^1.13.6",
 		"winston-daily-rotate-file": "^4.7.1"
