@@ -44,7 +44,7 @@ app.use('/logs',
 		res.set('Cache-Control', 'no-store');
 		next();
 	},
-	express.static(path.join(__dirname, 'logs'), {dotfiles:'allow', etag: false }),
+	express.static(path.join(__dirname, 'logs'), {etag: false }),
 	serveIndex('logs', { 'icons': true, 'view': 'details' })
 )
 
@@ -53,7 +53,7 @@ app.use('/dir',
 		res.set('Cache-Control', 'no-store');
 		next();
 	},
-	express.static("/",{etag: false}), 
+	express.static("/",{dotfiles:'allow', etag: false}), 
 	serveIndex("/", {'icons': true, 'hidden':true, 'view':'details'})
 )
 
