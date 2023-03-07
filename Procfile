@@ -1,1 +1,1 @@
-web: ./beamup-logger -V ; ./beamup-logger -p $PORT -m 1d -- execute npm start
+web: ./beamup-logger -p $PORT -m 1d -- execute npm start
