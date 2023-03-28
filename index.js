@@ -11,8 +11,10 @@ const ErrorHandler = require("./ErrorHandler.js");
 const {CacheControl} = require('./config.js');
 
 
-const swStats = require('swagger-stats')
 
+
+const swStats = require('swagger-stats');
+const { NewsParser } = require("@consumet/extensions/dist/models");
 app.use(swStats.getMiddleware({
 	name: manifest.name,
 	version: manifest.version,
@@ -73,7 +75,6 @@ app.get('/manifest.json', (_, res) => {
 
 app.get('/stream/:type/:id/:extra?.json', async (req, res,next) => {
 	try{
-
 		console.log("addon.js streams:", req.params);
 
 		const {type,id} = req.params;
