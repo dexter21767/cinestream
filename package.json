@@ -7,7 +7,7 @@
 		"dev": "nodemon server.js"
 	},
 	"dependencies": {
-		"@consumet/extensions": "^v1.4.1",
+		"@consumet/extensions": "^v1.4.17",
 		"axios": "^0.27.2",
 		"dotenv": "^16.0.3",
 		"express": "^4.18.2",
